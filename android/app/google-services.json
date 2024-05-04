@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "487457839660",
+    "project_id": "fir-all-in-one-1fe88",
+    "storage_bucket": "fir-all-in-one-1fe88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487457839660:android:5f665b852e2d533f0f8f89",
+        "android_client_info": {
+          "package_name": "com.example.firebaseall_in_one"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487457839660-s0jcujfol494ofb6hgidqb7g31fi5aci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYD3kM5kavsyZNad-AAMrQMwT1-NyleAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487457839660-s0jcujfol494ofb6hgidqb7g31fi5aci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
