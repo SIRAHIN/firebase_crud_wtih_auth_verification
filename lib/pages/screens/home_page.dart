@@ -3,14 +3,11 @@ import 'package:firebaseall_in_one/controller/auth_controller.dart';
 import 'package:firebaseall_in_one/controller/data_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final authController = Get.put(AuthController());
-
-  TextEditingController noteTextController = TextEditingController();
 
   final DataController dataController = Get.put(DataController());
 
@@ -32,15 +29,16 @@ class HomePage extends StatelessWidget {
           stream: dataController.getAllnote(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              List<DocumentSnapshot> listofDoc = snapshot.data!.docs;
-              print(listofDoc);
+              List<DocumentSnapshot> listofDocs = snapshot.data!.docs;
+              print(listofDocs);
               return ListView.builder(
-                itemCount: listofDoc.length,
+                itemCount: listofDocs.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   // get each individul doc
-                  DocumentSnapshot documentSnapshot = listofDoc[index];
+                  DocumentSnapshot documentSnapshot = listofDocs[index];
                   String DocID = documentSnapshot.id;
+                  print(DocID);
 
                   // get note from each doc
                   Map<String, dynamic> featchNotes =
@@ -56,40 +54,76 @@ class HomePage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                            onPressed: () {
-                              Get.defaultDialog(
-                                title: "Note Time!",
-                                content: TextField(
-                                  controller: noteTextController,
+                          onPressed: () {
+                            // Set the initial value for the TextEditingController//
+                            //Use the controller for Initial Value://\
+                            // Can't we both inital and controller //
+                            // Rather then use inital we can set value into 
+                                      //  controller.text //
+                            dataController.noteTextController.text =
+                                featchNotes["note"] ?? 'No Edit';
+                                
+                            Get.defaultDialog(
+                              title: "Note Time!",
+                              content: TextFormField(
+                                controller: dataController.noteTextController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Enter your note here',
                                 ),
-                                textConfirm: "Add notes",
-                                onConfirm: () {
-                                  noteTextController.text.isEmpty
-                                      ? Get.snackbar(
-                                          "Error", "note box is empty")
-                                      : dataController
-                                          .updateNote(DocID , noteTextController.text);
-                                  noteTextController.clear();
+                              ),
+                              textConfirm: "Add notes",
+                              onConfirm: () {
+                                String noteText = dataController
+                                    .noteTextController.text
+                                    .trim();
+                                if (noteText.isEmpty) {
+                                  Get.snackbar("Error", "Note box is empty");
+                                } else {
+                                  dataController.updateNote(
+                                    DocID,
+                                    noteText,
+                                  );
+                                  dataController.noteTextController.clear();
                                   Get.back();
-                                },
-                              );
+                                }
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.edit),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              dataController.deleteNote(docID: DocID);
                             },
-                            icon: Icon(Icons.edit)),
-                        IconButton(onPressed: () {
-                        dataController.deleteNote(docID: DocID);
-                        }, icon: Icon(Icons.delete)),
+                            icon: const Icon(Icons.delete)),
                       ],
                     ),
                   );
                 },
               );
+            } else if (snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.hasError) {
+              return const Center(child: CircularProgressIndicator());
             } else {
-              return Text("no data found");
+              return const Text('No Notes Founds');
             }
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Get.defaultDialog(
+              title: "Note Time!",
+              content: TextFormField(
+                controller: dataController.noteTextController,
+              ),
+              textConfirm: "Add notes",
+              onConfirm: () {
+                dataController.addNote(dataController.noteTextController.text);
+                Get.back();
+                // print(authController.credential!.user!.email);
+              },
+            );
+          },
           child: const Icon(Icons.add),
         ),
       ),

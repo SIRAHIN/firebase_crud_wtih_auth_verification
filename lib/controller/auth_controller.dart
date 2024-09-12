@@ -8,6 +8,7 @@ import '../pages/screens/home_page.dart';
 class AuthController extends GetxController {
 
   String verificationId_ = '';
+  UserCredential? credential;
 
   //Creating account using email password varification
   void createAccount(String email, String password, String cPassword) async {
@@ -17,9 +18,9 @@ class AuthController extends GetxController {
       Get.snackbar("INVALID", "password is not same");
     } else {
       try {
-        UserCredential credential = await FirebaseAuth.instance
+         credential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-                email: email.trim(), password: password);
+                email: email.trim(), password: password);         
         Get.to(LoginPage());
       } on FirebaseAuthException catch (ex) {
         Get.snackbar("Exception", ex.code.toString());
@@ -34,7 +35,7 @@ class AuthController extends GetxController {
     Get.snackbar("REQUIRED", "Requied field is empty");
    }else {
     try{
-       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.trim(), password: password);
+        credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.trim(), password: password);
       Get.off(HomePage());
          }on FirebaseAuthException catch (ex){
      Get.snackbar("EXCEPTON", ex.code.toString());
